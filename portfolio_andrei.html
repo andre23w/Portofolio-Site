@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crăciunescu Andrei-Mircea — Robotics Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #181818;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.15);
+    --text: #f0ede8;
+    --muted: #888;
+    --accent: #c8f04a;
+    --accent2: #4affc8;
+    --font-head: 'Syne', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-head);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 32px; height: 32px;
+    border: 1px solid rgba(200,240,74,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease-out, width 0.2s, height 0.2s, border-color 0.2s;
+  }
+
+  /* Nav */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.5rem 4rem;
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-size: 13px;
+    font-family: var(--font-mono);
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .nav-links { display: flex; gap: 2.5rem; }
+  .nav-links a {
+    font-size: 12px;
+    font-family: var(--font-mono);
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 4rem 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(200,240,74,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,240,74,0.03) 1px, transparent 1px);
+    background-size: 80px 80px;
+  }
+
+  .hero-noise {
+    position: absolute; inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px;
+  }
+
+  .hero-tag {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-name {
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+  }
+
+  .hero-name span { color: var(--accent); }
+
+  .hero-desc {
+    max-width: 520px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+  }
+
+  .hero-cta {
+    display: flex; gap: 1rem; align-items: center;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s forwards;
+  }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent);
+    color: #0a0a0a;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(200,240,74,0.25);
+  }
+
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    text-decoration: none;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+  .hero-number {
+    position: absolute;
+    right: 4rem; bottom: 5rem;
+    font-size: clamp(8rem, 20vw, 18rem);
+    font-weight: 800;
+    color: rgba(255,255,255,0.015);
+    line-height: 1;
+    user-select: none;
+    letter-spacing: -0.05em;
+  }
+
+  /* Sections */
+  section { padding: 7rem 4rem; }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 4rem;
+  }
+
+  /* About */
+  .about { background: var(--bg2); border-top: 1px solid var(--border); }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .about-text {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(240,237,232,0.75);
+    line-height: 1.9;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    border: 1px solid var(--border);
+  }
+
+  .stat-item {
+    padding: 2rem;
+    background: var(--bg3);
+    border: none;
+  }
+  .stat-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* Experience */
+  .experience { background: var(--bg); border-top: 1px solid var(--border); }
+
+  .exp-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 3rem;
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--border);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+  .exp-item.visible { opacity: 1; transform: translateY(0); }
+
+  .exp-date {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    padding-top: 4px;
+  }
+
+  .exp-company {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .exp-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.01em;
+  }
+
+  .exp-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .exp-bullets li {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: rgba(240,237,232,0.7);
+    line-height: 1.7;
+    padding-left: 1.2rem;
+    position: relative;
+  }
+  .exp-bullets li::before {
+    content: '→';
+    position: absolute; left: 0;
+    color: var(--accent);
+  }
+
+  /* Skills */
+  .skills { background: var(--bg2); border-top: 1px solid var(--border); }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    border: 1px solid var(--border);
+    margin-top: 0;
+  }
+
+  .skill-card {
+    background: var(--bg3);
+    padding: 2rem 1.5rem;
+    transition: background 0.2s;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s, transform 0.4s, background 0.2s;
+  }
+  .skill-card.visible { opacity: 1; transform: translateY(0); }
+  .skill-card:hover { background: #202020; }
+
+  .skill-cat {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .skill-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  .skill-desc {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* Education */
+  .education { background: var(--bg); border-top: 1px solid var(--border); }
+
+  .edu-grid { display: flex; flex-direction: column; gap: 2rem; }
+
+  .edu-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 3rem;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.6s, transform 0.6s, border-color 0.2s;
+  }
+  .edu-item.visible { opacity: 1; transform: translateX(0); }
+  .edu-item:hover { border-color: var(--border2); }
+
+  .edu-period {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    padding-top: 4px;
+  }
+
+  .edu-school {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent2);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .edu-degree {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+
+  /* Certifications */
+  .certs {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+  }
+
+  .cert-list {
+    display: flex;
+    gap: 1px;
+    border: 1px solid var(--border);
+  }
+
+  .cert-item {
+    flex: 1;
+    background: var(--bg3);
+    padding: 2rem;
+    transition: background 0.2s;
+  }
+  .cert-item:hover { background: #202020; }
+
+  .cert-year {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    margin-bottom: 0.75rem;
+  }
+
+  .cert-name {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  /* Contact */
+  .contact {
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding: 8rem 4rem;
+  }
+
+  .contact-title {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 2rem;
+  }
+
+  .contact-title span { color: var(--accent); }
+
+  .contact-links {
+    display: flex; gap: 2rem; justify-content: center; margin-top: 3rem;
+  }
+
+  .contact-link {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    transition: color 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .contact-link:hover { color: var(--accent); }
+
+  /* Footer */
+  footer {
+    padding: 2rem 4rem;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  footer p {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); }
+
+  @media (max-width: 768px) {
+    nav { padding: 1.25rem 1.5rem; }
+    .nav-links { gap: 1.5rem; }
+    section { padding: 5rem 1.5rem; }
+    .hero { padding: 0 1.5rem 4rem; }
+    .about-grid, .exp-item, .edu-item { grid-template-columns: 1fr; gap: 1.5rem; }
+    .cert-list { flex-direction: column; }
+    .hero-number { display: none; }
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <div class="nav-logo">AM.Crăciunescu</div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#experience">Experience</a>
+    <a href="#skills">Skills</a>
+    <a href="#education">Education</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-noise"></div>
+  <div class="hero-number">22</div>
+
+  <div class="hero-tag">Robotics Engineer · Bucharest, RO</div>
+  <h1 class="hero-name">Andrei<br><span>Crăciunescu</span></h1>
+  <p class="hero-desc">Third-year Robotics Engineering student. PLC programmer. Industrial automation enthusiast building the future of smart manufacturing.</p>
+  <div class="hero-cta">
+    <a href="#experience" class="btn-primary">View Experience ↓</a>
+    <a href="#contact" class="btn-ghost">Get in Touch</a>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="section-label">// 001 — About</div>
+  <h2 class="section-title">Who I Am</h2>
+  <div class="about-grid">
+    <p class="about-text">
+      I'm a third-year student at the Faculty of Industrial Engineering and Robotics, Politehnica Bucharest. I'm driven by a deep interest in automation, control systems, and the integration of robotics into real-world industrial environments.<br><br>
+      I enjoy tackling complex engineering challenges — finding elegant, efficient solutions where others see only complexity. The engineering field is, for me, a space of unlimited opportunity.
+    </p>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number">3rd</div>
+        <div class="stat-label">Year of Study</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">1+</div>
+        <div class="stat-label">Years Experience</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">10+</div>
+        <div class="stat-label">Tools & Skills</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">3</div>
+        <div class="stat-label">Certifications</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="experience" id="experience">
+  <div class="section-label">// 002 — Experience</div>
+  <h2 class="section-title">Where I've Worked</h2>
+
+  <div class="exp-item">
+    <div class="exp-date">Jun 2025 —<br>Jul 2025</div>
+    <div>
+      <div class="exp-company">Cimlec Industrial SRL</div>
+      <div class="exp-title">Automation Intern</div>
+      <ul class="exp-bullets">
+        <li>Developed and optimized automation logic using Siemens STEP 7 and TIA Portal for industrial control systems.</li>
+        <li>Configured and programmed PLCs to automate industrial processes and improve operational efficiency.</li>
+        <li>Assisted in the design and development of complex electrical schematics, ensuring compliance with technical standards.</li>
+        <li>Participated in the commissioning of a high-scale robotic production line at the Dacia-Mioveni plant.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="skills" id="skills">
+  <div class="section-label">// 003 — Skills</div>
+  <h2 class="section-title">What I Know</h2>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-cat">Automation</div>
+      <div class="skill-name">TIA Portal</div>
+      <div class="skill-desc">Siemens industrial automation & PLC programming</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-cat">Automation</div>
+      <div class="skill-name">STEP 7</div>
+      <div class="skill-desc">Legacy Siemens PLC logic development</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-cat">Programming</div>
+      <div class="skill-name">C / C++</div>
+      <div class="skill-desc">Low-level systems & embedded programming</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-cat">CAD / Design</div>
+      <div class="skill-name">CATIA V5</div>
+      <div class="skill-desc">3D mechanical design & simulation</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-cat">CAD / Design</div>
+      <div class="skill-name">Siemens NX</div>
+      <div class="skill-desc">Advanced CAD and manufacturing</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-cat">CAD / Design</div>
+      <div class="skill-name">AutoCAD</div>
+      <div class="skill-desc">2D/3D technical drawings</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-cat">Engineering</div>
+      <div class="skill-name">LabVIEW</div>
+      <div class="skill-desc">Data acquisition & instrumentation</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-cat">Data</div>
+      <div class="skill-name">SQL</div>
+      <div class="skill-desc">Relational databases & queries</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-cat">3D / Web</div>
+      <div class="skill-name">Blender · HTML</div>
+      <div class="skill-desc">3D modeling & front-end basics</div>
+    </div>
+  </div>
+</section>
+
+<section class="education" id="education">
+  <div class="section-label">// 004 — Education</div>
+  <h2 class="section-title">Where I Studied</h2>
+  <div class="edu-grid">
+    <div class="edu-item">
+      <div class="edu-period">Sep 2023 — Present</div>
+      <div>
+        <div class="edu-school">Politehnica Bucharest</div>
+        <div class="edu-degree">B.Eng. Robotics — Faculty of Industrial Engineering & Robotics</div>
+      </div>
+    </div>
+    <div class="edu-item">
+      <div class="edu-period">Sep 2019 — Jun 2023</div>
+      <div>
+        <div class="edu-school">"Alexandru Odobescu" National College, Pitești</div>
+        <div class="edu-degree">Mathematics — Computer Science, Intensive Computer Science</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="certs" id="certs">
+  <div class="section-label">// 005 — Certifications</div>
+  <h2 class="section-title">Credentials</h2>
+  <div class="cert-list">
+    <div class="cert-item">
+      <div class="cert-year">2023</div>
+      <div class="cert-name">Certificate of Professional Competence</div>
+    </div>
+    <div class="cert-item">
+      <div class="cert-year">2023</div>
+      <div class="cert-name">Certificate of Digital Competence</div>
+    </div>
+    <div class="cert-item">
+      <div class="cert-year">2023</div>
+      <div class="cert-name">Certificate of Language Competence — English B2</div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="section-label" style="margin-bottom: 1.5rem;">// 006 — Contact</div>
+  <h2 class="contact-title">Let's <span>Work</span><br>Together</h2>
+  <p style="font-family: var(--font-mono); font-size: 14px; color: var(--muted); max-width: 400px; margin: 0 auto; line-height: 1.8;">
+    Open to internships, junior roles, and collaborative projects in robotics and industrial automation.
+  </p>
+  <div class="contact-links">
+    <a href="mailto:andreicraciunescu25@gmail.com" class="contact-link">
+      ✉ andreicraciunescu25@gmail.com
+    </a>
+    <a href="tel:0729345014" class="contact-link">
+      ☎ 0729 345 014
+    </a>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 Crăciunescu Andrei-Mircea</p>
+  <p>Robotics Engineering · Bucharest, RO</p>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '16px'; cursor.style.height = '16px';
+      ring.style.width = '48px'; ring.style.height = '48px';
+      ring.style.borderColor = 'rgba(200,240,74,0.7)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '8px'; cursor.style.height = '8px';
+      ring.style.width = '32px'; ring.style.height = '32px';
+      ring.style.borderColor = 'rgba(200,240,74,0.4)';
+    });
+  });
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.exp-item, .skill-card, .edu-item').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
